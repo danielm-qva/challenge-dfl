@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json.schemastore.org/nest-cli",
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "apps/challenge-dfl/src",
+  "compilerOptions": {
+    "deleteOutDir": true,
+    "webpack": true,
+    "tsConfigPath": "apps/challenge-dfl/tsconfig.app.json"
+  },
+  "monorepo": true,
+  "root": "apps/challenge-dfl",
+  "projects": {
+    "challenge-dfl": {
+      "type": "application",
+      "root": "apps/challenge-dfl",
+      "entryFile": "main",
+      "sourceRoot": "apps/challenge-dfl/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/challenge-dfl/tsconfig.app.json"
+      }
+    },
+    "currency-ms": {
+      "type": "application",
+      "root": "apps/currency-ms",
+      "entryFile": "main",
+      "sourceRoot": "apps/currency-ms/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/currency-ms/tsconfig.app.json"
+      }
+    }
+  }
+}
