@@ -27,6 +27,15 @@
       "compilerOptions": {
         "tsConfigPath": "apps/currency-ms/tsconfig.app.json"
       }
+    },
+    "transaction-ms": {
+      "type": "application",
+      "root": "apps/transaction-ms",
+      "entryFile": "main",
+      "sourceRoot": "apps/transaction-ms/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/transaction-ms/tsconfig.app.json"
+      }
     }
   }
 }

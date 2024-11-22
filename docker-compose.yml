@@ -1,12 +1,96 @@
+version: '5'
+
 services:
   redis:
-    container_name: cache
+    container_name: redis
     image: redis
     ports:
-      - 6379:6379
+      - "6379:6379"
     volumes:
-      - redis:/data
+      - ./redis:/data
+    networks:
+      - backend
+
+  mongo:
+    container_name: mongo_ms
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./mongo_data:/data/db
+    networks:
+      - backend
+    restart: always
+
+#
+#  client-gateway:
+#    build: ./
+#    ports:
+#      - "3000:3000"
+#    volumes:
+#      - ./apps/challenge-dfl/src:/usr/src/app/src
+#    command: npm run start:microservices-main
+#    environment:
+#      - NEST_LIST_CURRENCY=USD,EUR,CAD,UER
+#      - NEST_PORT_GATEWAY=3000
+#      - NEST_PORT_REDIS=6379
+#      - NEST_HOST_REDIS=redis
+#      - APP_JWT_SECRET=sasd111qsSaskkjshehyyluuwolsjush**77197hbbaggt
+#      - NEST_HOST_CURRENCY=microservices-currency
+#      - NEST_HOST_TRANSACTION=microservices-transactions
+#    networks:
+#      - backend
+#    depends_on:
+#      - redis
+#      - mongo
+#      - microservices-currency
+#      - microservices-transactions
+#
+#  microservices-currency:
+#    container_name: microservices-currency
+#    build: ./
+#    ports:
+#      - "3001:3001"
+#    volumes:
+#      - ./apps/microservices-currency/src:/usr/src/app/src
+#    command: npm run start:microservices-currency
+#    environment:
+#      - NEST_PORT_MS_CURRENCY=3001
+#      - NEST_PORT_REDIS=6379
+#      - NEST_HOST_REDIS=redis
+#      - NEST_MONGO_URL=mongodb://mongo_ms:27017/challenge-dfl
+#      - NEST_BASE_URL_EXCHANGE_API=https://concurso.dofleini.com/exchange-rate/api/latest
+#      - NEST_BASE_CURRENCY=USD
+#    networks:
+#      - backend
+#    depends_on:
+#      - redis
+#      - mongo
+#
+#  microservices-transactions:
+#    container_name: microservices-transactions
+#    build: ./
+#    ports:
+#      - "3002:3002"
+#    volumes:
+#      - ./apps/microservices-transactions/src:/usr/src/app/src
+#    command: npm run start:microservices-transactions
+#    environment:
+#      - NEST_PORT_MS_TRANSACTION=3002
+#      - NEST_PORT_REDIS=6379
+#      - NEST_HOST_REDIS=redis
+#      - NEST_MONGO_URL=mongodb://mongo_ms:27017/challenge-dfl
+#    networks:
+#      - backend
+#    depends_on:
+#      - redis
+#      - mongo
+#
+networks:
+  backend:
+    driver: bridge
 
 volumes:
   redis:
     driver: local
+  mongo: { }

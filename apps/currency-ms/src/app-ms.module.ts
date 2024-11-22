@@ -1,23 +1,26 @@
 import { Module } from '@nestjs/common';
-import { CurrencyMsController } from './controller/currency-ms.controller';
-import { CurrencyMsService } from './services/currency-ms.service';
 import { ConfigModule } from '@nestjs/config';
 import { CacheModule } from '@nestjs/cache-manager';
 import * as redisStore from 'cache-manager-redis-store';
+import { TransactionModule } from './modules/transaction.module';
+import { JobService } from './services/Job.service';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    TransactionModule,
+    HttpModule,
     CacheModule.register({
       isGlobal: true,
       store: redisStore,
-      host: 'localhost',
-      port: 6379,
+      host: process.env.NEST_HOST_REDIS,
+      port: process.env.NEST_PORT_REDIS,
     }),
   ],
-  controllers: [CurrencyMsController],
-  providers: [CurrencyMsService],
+  controllers: [],
+  providers: [JobService],
 })
 export class AppMsModule {}
