@@ -15,7 +15,7 @@ import { StatisticsController } from '../controller/statistics.controller';
   imports: [
     ClientsModule.register([
       {
-        name: process.env.NEST_HOST_CURRENCY || CURRENCY_SERVICE,
+        name: CURRENCY_SERVICE,
         transport: Transport.TCP,
         options: {
           host: process.env.NEST_HOST_CURRENCY || 'localhost',

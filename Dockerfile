@@ -1,7 +1,6 @@
 FROM node:20-alpine3.19
 
 WORKDIR /usr/src/app
-RUN chown -R node:node /usr/src/app
 
 COPY package*.json ./
 COPY package-lock*.json ./
@@ -10,9 +9,11 @@ RUN npm install
 
 COPY . .
 
-CMD ["npm", "run", "start:microservices-main"]
-CMD ["npm", "run", "start:microservices-currency"]
-CMD ["npm", "run", "start:microservices-transactions"]
+#COPY .env.template ./
+
+COPY start.sh /usr/src/app/start.sh
+RUN chmod +x /usr/src/app/start.sh
+CMD ["./start.sh"]
 
 EXPOSE 3000
 

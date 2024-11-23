@@ -32,6 +32,7 @@ export class TransactionTypeService {
   }
 
   async findAll(queryReq: QueryRequestDto): Promise<any[]> {
+    console.log('Serivices', queryReq);
     return this.TransactionType.find()
       .setOptions({ sanitizeFilter: true })
       .skip((queryReq.page - 1) * queryReq.size)

@@ -18,9 +18,9 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./apps/challenge-dfl/test/jest-e2e.json",
-    "start:microservices-main": "nest start challenge-dfl --watch",
-    "start:microservices-currency": "nest start currency-ms --watch",
-    "start:microservices-transactions": "nest start transaction-ms --watch",
+    "start:main": "nest start challenge-dfl --watch",
+    "start:currency-ms": "nest start currency-ms --watch",
+    "start:transaction-ms": "nest start transaction-ms --watch",
     "start:debug:microservices-main": "nest start --debug --watch challenge-dfl",
     "start:debug:microservices-currency": "nest start --debug --watch currency-ms"
   },
