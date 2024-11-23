@@ -154,11 +154,3 @@ El sistema cuenta con un **Job Scheduler** configurado para actualizar cada 2 ho
 
 ---
 
-## **Contribución**
-
-1. Realiza un fork del repositorio.
-2. Crea una rama para tu funcionalidad:
-   ```bash
-   git checkout -b feature/nueva-funcionalidad
-   ```
-3. Realiza un **pull request** con tus cambios.
