@@ -1,99 +1,164 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+# **Challenge DFL**
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Este proyecto consiste en una arquitectura de microservicios utilizando **NestJS**, **Docker**, **MongoDB**, y **Redis**. La finalidad del proyecto es realizar operaciones relacionadas con tipos de transacciones y conversión de tasas de cambio, con servicios que se comunican entre sí mediante mensajes.
 
-## Description
+---
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## **Tabla de Contenidos**
 
-## Project setup
+1. [Descripción del Proyecto](#descripción-del-proyecto)  
+2. [Arquitectura del Proyecto](#arquitectura-del-proyecto)  
+3. [Tecnologías Utilizadas](#tecnologías-utilizadas)  
+4. [Estructura del Repositorio](#estructura-del-repositorio)  
+5. [Configuración y Ejecución](#configuración-y-ejecución)  
+6. [Microservicios Implementados](#microservicios-implementados)  
+7. [Integración de Jobs y Tareas](#integración-de-jobs-y-tareas)  
+8. [Contribución](#contribución)  
 
-```bash
-$ npm install
+---
+
+## **Descripción del Proyecto**
+
+El proyecto es un sistema de microservicios desarrollado en **NestJS** con el objetivo de gestionar transacciones y tasas de cambio. La arquitectura fue diseñada para ser escalable y modular, separando responsabilidades específicas en diferentes servicios que interactúan mediante colas y mensajes.
+
+---
+
+## **Arquitectura del Proyecto**
+
+El sistema está compuesto por los siguientes servicios y herramientas:
+
+- **Microservicios:**
+  - **client-gateway**: Puerta de entrada para gestionar solicitudes desde el cliente.
+  - **transaction-ms**: Microservicio para la gestión de tipos de transacciones.
+  - **currency-ms**: Microservicio encargado de gestionar tasas de cambio entre divisas.
+
+- **Bases de datos:**
+  - **MongoDB**: Base de datos principal para almacenar información de transacciones y tipos.
+  - **Redis**: Cache utilizado para optimizar respuestas y almacenar tasas de cambio temporalmente.
+
+- **Mensajería entre servicios:**
+  - Implementación basada en eventos para la comunicación entre microservicios.
+
+---
+
+## **Tecnologías Utilizadas**
+
+- **Node.js** (NestJS): Framework principal para la construcción de los microservicios.
+- **Docker**: Contenedores para orquestar la infraestructura de los servicios y bases de datos.
+- **MongoDB**: Almacenamiento persistente de datos.
+- **Redis**: Almacenamiento en caché y persistencia de datos temporal.
+- **RxJS**: Manejo reactivo de flujos de datos.
+- **TypeScript**: Lenguaje principal del proyecto.
+
+---
+
+## **Estructura del Repositorio**
+
+```
+challenge-dfl/
+│
+├── apps/
+│   ├── client-gateway/     # Gateway para gestionar solicitudes
+│   ├── currency-ms/        # Microservicio de tasas de cambio
+│   └── transaction-ms/     # Microservicio de transacciones
+│
+├── mongo_data/             # Datos de MongoDB
+├── redis/                  # Datos de Redis
+├── .env                    # Variables de entorno
+├── docker-compose.yml      # Configuración de Docker Compose
+├── Dockerfile              # Archivo Docker para la aplicación
+├── start.sh                # Script de inicio
+└── README.md               # Archivo de descripción del proyecto
 ```
 
-## Compile and run the project
+---
+
+## **Configuración y Ejecución**
+
+### **Requisitos Previos**
+- Node.js y npm instalados.
+- Docker y Docker Compose configurados en tu máquina.
+- Clonar el repositorio:
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+git clone <URL_DEL_REPOSITORIO>
+cd challenge-dfl
 ```
 
-## Run tests
+### **Configuración**
+1. Configura las variables de entorno en un archivo `.env` basado en `.env.template`. Ejemplo:
+   ```
+   NEST_BASE_CURRENCY=USD
+   NEST_LIST_CURRENCY=USD,EUR,GBP
+   NEST_BASE_URL_EXCHANGE_API=https://api.exchangerate.host/latest
+   ```
 
-```bash
-# unit tests
-$ npm run test
+2. Instala las dependencias:
+   ```bash
+   npm install
+   ```
 
-# e2e tests
-$ npm run test:e2e
+### **Ejecución**
+1. Levanta los servicios con Docker:
+   ```bash
+   docker-compose up --build
+   ```
 
-# test coverage
-$ npm run test:cov
+2. Accede al gateway:
+   - URL: `http://localhost:3000`
+
+---
+
+## **Microservicios Implementados**
+
+### **Client Gateway**
+El **gateway** es la entrada principal al sistema y expone las rutas REST para el usuario. Encaminan las solicitudes a los microservicios correspondientes utilizando el patrón de comunicación basado en comandos (`cmd`).
+
+Ejemplo de ruta implementada:
+```typescript
+@Get()
+getAllTransactionType(@Query() queryReq: QueryRequestDto) {
+  return this.clientTransactionType.send(
+    { cmd: 'findAllTransactionType' },
+    { queryReq },
+  );
+}
 ```
 
-## Deployment
+### **Transaction MS**
+Este microservicio maneja las operaciones relacionadas con los **tipos de transacciones**. Expone funcionalidades para consultar y gestionar la base de datos de transacciones.
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+### **Currency MS**
+El servicio gestiona las **tasas de cambio** entre divisas. Incluye:
+- Integración con una API externa para obtener tasas actualizadas.
+- Implementación de un sistema de **Jobs** con `@nestjs/schedule` para actualizar periódicamente la información.
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g mau
-$ mau deploy
+Código relevante:
+```typescript
+@Cron('0 0 */2 * * *', { name: 'JobExchangeCurrency' })
+async updateCurrency() {
+  const baseUrl = `${this.configService.get('NEST_BASE_URL_EXCHANGE_API')}/?base=${this.configService.get('NEST_BASE_CURRENCY')}`;
+  const response = await firstValueFrom(this.httpService.get(baseUrl));
+  this.exchangeRate.updateRates(response.data.base, response.data.rates);
+}
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+---
 
-## Resources
+## **Integración de Jobs y Tareas**
 
-Check out a few resources that may come in handy when working with NestJS:
+El sistema cuenta con un **Job Scheduler** configurado para actualizar cada 2 horas las tasas de cambio almacenadas en la caché de Redis. Esto permite:
+1. Optimizar las respuestas del sistema.
+2. Evitar llamadas excesivas a la API externa.
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+---
 
-## Support
+## **Contribución**
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+1. Realiza un fork del repositorio.
+2. Crea una rama para tu funcionalidad:
+   ```bash
+   git checkout -b feature/nueva-funcionalidad
+   ```
+3. Realiza un **pull request** con tus cambios.
