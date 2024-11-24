@@ -20,7 +20,6 @@ async function bootstrap() {
   const assignCode = app.get(AssignCodeService);
   await job.updateCurrency();
   await assignCode.setUpStartDay();
-  await assignCode.checkDayChange();
   app.useGlobalFilters(new RpcCustomExceptionFilter());
   await app.listen();
 }

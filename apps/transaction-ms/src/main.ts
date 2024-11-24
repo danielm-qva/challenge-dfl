@@ -10,7 +10,7 @@ async function bootstrap() {
       transport: Transport.TCP,
       options: {
         host: process.env.NEST_HOST_TRANSACTION || 'localhost',
-        port: Number(process.env.NEST_PORT_MS_CURRENCY) || 3002,
+        port: Number(process.env.NEST_PORT_MS_TRANSACTION) || 3002,
       },
     },
   );

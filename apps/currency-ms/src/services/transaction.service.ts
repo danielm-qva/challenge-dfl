@@ -40,7 +40,6 @@ export class TransactionService {
   private readonly logger = new Logger(TransactionService.name);
 
   async create(createTransactionDto: CreateTransactionDto) {
-    const { code, codeFinal } = this.assignCodeService.getFirstAvailableCode();
     const transactionType = await this.TransactionType.findById(
       createTransactionDto.transactionType,
     ).exec();
@@ -50,7 +49,7 @@ export class TransactionService {
         message: 'transaction type not found',
       });
     }
-
+    const { code, codeFinal } = this.assignCodeService.getFirstAvailableCode();
     const exchangeRate =
       createTransactionDto.fromCurrency === createTransactionDto.toCurrency
         ? 1
@@ -74,7 +73,7 @@ export class TransactionService {
           message: 'transaction not created',
         });
       }
-      this.assignCodeService.update(code, true);
+      this.assignCodeService.delete(code);
       return newTransaction;
     } catch (error: any) {
       this.assignCodeService.update(code, false);
@@ -191,5 +190,9 @@ export class TransactionService {
         message: 'transaction not is remove',
       });
     }
+  }
+
+  async getLastRecord() {
+    return await this.Transaction.findOne().sort({ createdAt: -1 }).exec();
   }
 }

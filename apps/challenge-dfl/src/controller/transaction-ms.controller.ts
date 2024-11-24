@@ -8,7 +8,6 @@ import {
   Query,
   Req,
   UseGuards,
-  UseInterceptors,
 } from '@nestjs/common';
 import { CreateTransactionDto } from '../../../currency-ms/src/dto/create-transaction.dto';
 import { CURRENCY_SERVICE } from '../config/services.constant';
@@ -16,7 +15,6 @@ import { ClientProxy } from '@nestjs/microservices';
 import { QueryRequestDto } from '../dto';
 import { AppAuthGuards } from '../guards/app-auth.guards';
 import { ParseObjectIdPipe } from '../pipe/parse-object-id.pipe';
-import { RejectDuplicatePayloadInterceptor } from '../interceptor/reject-dupicate-payload.interceptor';
 
 @Controller('conversion')
 @UseGuards(AppAuthGuards)
@@ -27,7 +25,7 @@ export class TransactionController {
   ) {}
 
   @Post()
-  @UseInterceptors(RejectDuplicatePayloadInterceptor)
+  // @UseInterceptors(RejectDuplicatePayloadInterceptor)
   async createConversion(
     @Body() createTransactionDto: CreateTransactionDto,
     @Req() req: any,

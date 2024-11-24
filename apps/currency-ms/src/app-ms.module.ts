@@ -3,7 +3,6 @@ import { ConfigModule } from '@nestjs/config';
 import { CacheModule } from '@nestjs/cache-manager';
 import * as redisStore from 'cache-manager-redis-store';
 import { TransactionModule } from './modules/transaction.module';
-import { JobService } from './services/Job.service';
 import { HttpModule } from '@nestjs/axios';
 
 @Module({
@@ -21,6 +20,6 @@ import { HttpModule } from '@nestjs/axios';
     }),
   ],
   controllers: [],
-  providers: [JobService],
+  providers: [],
 })
 export class AppMsModule {}

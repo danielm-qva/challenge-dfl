@@ -1,80 +1,58 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { AvailabilityCode, fillZero } from '../utils/GenerateCode';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { Cron } from '@nestjs/schedule';
+import { TransactionService } from './transaction.service';
 
 @Injectable()
-export class AssignCodeService {
+export class AssignCodeService implements OnModuleInit {
   private date: Date = new Date();
   private size = 1e6 + 2;
   private Codes = new AvailabilityCode();
 
-  constructor(@Inject(CACHE_MANAGER) private cacheService: Cache) {
-    this.init().then();
-  }
+  constructor(
+    @Inject(CACHE_MANAGER) private cacheService: Cache,
+    @Inject(forwardRef(() => TransactionService))
+    private TransactionService: TransactionService,
+  ) {}
 
-  async init() {
-    const date = new Date();
-    const dayCacheStart =
-      await this.cacheService.get<string>('SERVER_DAY_START');
-    console.log('dayCacheStart', dayCacheStart);
-    if (!dayCacheStart) {
-      await this.initializeServer(date);
-    } else {
-      const dayStart = new Date(dayCacheStart);
-      if (
-        dayStart.getDate() !== date.getDate() ||
-        dayStart.getMonth() !== date.getMonth() ||
-        dayStart.getFullYear() !== date.getFullYear()
-      ) {
-        await this.resetAndInitializeServer(date);
+  async onModuleInit() {
+    try {
+      const lastRecord = await this.TransactionService.getLastRecord();
+      const initValue = lastRecord?.transactionCode
+        .split('')
+        .reverse()
+        .join('')
+        .slice(-8);
+      if (initValue) {
+        for (let i = parseInt(initValue); i <= this.size; i++) {
+          this.Codes.insert(fillZero(i, 8), false);
+        }
+      } else {
+        await this.resetAndInitializeServer();
       }
+    } catch (error) {
+      console.error('Error al obtener el último registro:', error.message);
     }
   }
 
-  private async initializeServer(date: Date) {
-    for (let i = 1; i <= this.size; i++) {
-      this.Codes.insert(fillZero(i, 8), false);
-    }
-    await this.cacheService.set('SERVER_DAY_START', date.toISOString());
-  }
-
-  private async resetAndInitializeServer(date: Date) {
+  private async resetAndInitializeServer() {
     this.Codes = new AvailabilityCode();
-
     for (let i = 1; i <= this.size; i++) {
       this.Codes.insert(fillZero(i, 8), false);
     }
-    await this.cacheService.set('SERVER_DAY_START', date.toISOString());
   }
 
   @Cron('* 1 0 * * *', { name: 'updateDayStart' })
   async setUpStartDay() {
-    const date = new Date();
-    await this.cacheService.set('SERVER_DAY_START', date.toISOString());
-  }
-
-  @Cron('* * * * *', { name: 'checkDayChange' })
-  async checkDayChange() {
-    const date = new Date();
-    const dayCacheStart =
+    const today = this.getFormattedDate(new Date());
+    const lastExecution =
       await this.cacheService.get<string>('SERVER_DAY_START');
-
-    if (!dayCacheStart) return;
-
-    const dayStart = new Date(dayCacheStart);
-    if (
-      dayStart.getDate() !== date.getDate() ||
-      dayStart.getMonth() !== date.getMonth() ||
-      dayStart.getFullYear() !== date.getFullYear()
-    ) {
-      await this.resetAndInitializeServer(date);
+    if (lastExecution !== today) {
+      await this.cacheService.set('SERVER_DAY_START', today);
+      await this.resetAndInitializeServer();
     }
-  }
-
-  insert(code: string, availability: boolean) {
-    this.Codes.insert(code, availability);
   }
 
   update(code: string, availability: boolean) {
@@ -88,12 +66,19 @@ export class AssignCodeService {
   getFirstAvailableCode() {
     const code = this.Codes.getFirstAvailableCode();
     return {
-      codeFinal: `T${this.date.getFullYear()}${this.date.getMonth()}${this.date.getDate()}${this.date.getHours()}${this.date.getMinutes()}${code}`,
+      codeFinal: `T${this.date.getFullYear()}${this.date.getMonth() + 1}${this.date.getDay()}${this.date.getHours()}${code}`,
       code,
     };
   }
 
   delete(code: string) {
     this.Codes.delete(code);
+  }
+
+  private getFormattedDate(date: Date): string {
+    return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date
+      .getDate()
+      .toString()
+      .padStart(2, '0')}`;
   }
 }
