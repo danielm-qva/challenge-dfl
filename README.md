@@ -13,8 +13,7 @@ Este proyecto consiste en una arquitectura de microservicios utilizando **NestJS
 4. [Estructura del Repositorio](#estructura-del-repositorio)  
 5. [Configuración y Ejecución](#configuración-y-ejecución)  
 6. [Microservicios Implementados](#microservicios-implementados)  
-7. [Integración de Jobs y Tareas](#integración-de-jobs-y-tareas)  
-8. [Contribución](#contribución)  
+7. [Integración de Jobs y Tareas](#integración-de-jobs-y-tareas)
 
 ---
 

@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
-import { from, Observable, switchMap } from 'rxjs';
+import { from, mergeMap, Observable } from 'rxjs';
 
 @Injectable()
 export class RejectDuplicatePayloadInterceptor implements NestInterceptor {
@@ -24,15 +24,16 @@ export class RejectDuplicatePayloadInterceptor implements NestInterceptor {
     const payloadKey = `${fromCurrency}-${toCurrency}-${amount}`;
 
     return from(this.cacheService.get(payloadKey)).pipe(
-      switchMap(async (value) => {
+      mergeMap((value) => {
         if (value) {
           throw new HttpException(
             'A similar transaction was already processed within the last 20 seconds. Please try again later',
             HttpStatus.BAD_REQUEST,
           );
         }
-        await this.cacheService.set(payloadKey, '1', 20);
-        return next.handle();
+        return from(this.cacheService.set(payloadKey, '1', 20)).pipe(
+          mergeMap(() => next.handle()),
+        );
       }),
     );
   }

@@ -1,4 +1,4 @@
-version: '5.34'
+version: '5.35'
 
 services:
   redis:
@@ -30,6 +30,8 @@ services:
       - ${NEST_PORT_GATEWAY}:3000
     volumes:
       - ./apps/challenge-dfl/src:/usr/src/app/src
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     command: npm run start:main
     environment:
       - NEST_LIST_CURRENCY=USD,EUR,CAD,UER
@@ -54,6 +56,8 @@ services:
       - ${NEST_PORT_MS_CURRENCY}:3001
     volumes:
       - ./apps/currency-ms/src:/usr/src/app/src
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     command: npm run start:currency-ms
     environment:
       - NEST_PORT_MS_CURRENCY=3001
@@ -76,6 +80,8 @@ services:
       - ${NEST_PORT_MS_TRANSACTION}:3002
     volumes:
       - ./apps/transaction-ms/src:/usr/src/app/src
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     command: npm run start:transaction-ms
     environment:
       - NEST_PORT_MS_TRANSACTION=3002
