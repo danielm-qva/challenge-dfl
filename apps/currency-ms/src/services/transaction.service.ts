@@ -41,12 +41,10 @@ export class TransactionService {
   private readonly logger = new Logger(TransactionService.name);
 
   async create(createTransactionDto: CreateTransactionDto) {
-    const transactionType = await this.Transaction.findById(
-      createTransactionDto?.transactionType,
-    )
-      .populate('transactionType', 'name', this.TransactionType)
-      .exec();
-    if (transactionType) {
+    const transactionType = await this.TransactionType.findById(
+      createTransactionDto.transactionType,
+    ).exec();
+    if (!transactionType) {
       return new RpcException({
         status: HttpStatus.NOT_FOUND,
         message: 'transaction type not found',
@@ -60,7 +58,6 @@ export class TransactionService {
             createTransactionDto.fromCurrency,
             createTransactionDto.toCurrency,
           );
-
     try {
       const document: any = {
         ...createTransactionDto,
@@ -71,6 +68,7 @@ export class TransactionService {
       };
       const newTransaction = await this.Transaction.create(document);
       if (!newTransaction) {
+        this.assignCodeService.update(code, false);
         return new RpcException({
           status: HttpStatus.NOT_FOUND,
           message: 'transaction not created',
@@ -78,13 +76,13 @@ export class TransactionService {
       }
       this.assignCodeService.delete(code);
       return {
-        ...newTransaction,
-        transactionType: transactionType.transactionType?.name,
+        ...newTransaction.toObject(),
+        transactionType: transactionType.name,
       };
     } catch (error: any) {
       this.assignCodeService.update(code, false);
       return {
-        error: true,
+        error: error,
         status: HttpStatus.INTERNAL_SERVER_ERROR,
         message: 'Transaction creation failed',
         code: ERROR_CODE.TRANSACTION_NOT_CREATED,

@@ -4,6 +4,7 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { RpcCustomExceptionFilter } from '../../challenge-dfl/src/exceptions/rpc-custom-exception.filter';
 import { JobService } from './services/Job.service';
 import { AssignCodeService } from './services/AssignCode.service';
+import { Cache } from 'cache-manager';
 
 async function bootstrap() {
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
@@ -18,6 +19,8 @@ async function bootstrap() {
   );
   const job = app.get(JobService);
   const assignCode = app.get(AssignCodeService);
+  const cacheService = app.get<Cache>('CACHE_MANAGER');
+  await cacheService.set('SERVER_DAY_START', new Date());
   await job.updateCurrency();
   await assignCode.setUpStartDay();
   app.useGlobalFilters(new RpcCustomExceptionFilter());

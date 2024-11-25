@@ -20,13 +20,9 @@ export class AssignCodeService implements OnModuleInit {
   async onModuleInit() {
     try {
       const lastRecord = await this.TransactionService.getLastRecord();
-      const initValue = lastRecord?.transactionCode
-        .split('')
-        .reverse()
-        .join('')
-        .slice(-8);
+      const initValue = lastRecord?.transactionCode?.slice(-8);
       if (initValue) {
-        for (let i = parseInt(initValue); i <= this.size; i++) {
+        for (let i = parseInt(initValue, 10) + 1; i <= this.size; i++) {
           this.Codes.insert(fillZero(i, 8), false);
         }
       } else {

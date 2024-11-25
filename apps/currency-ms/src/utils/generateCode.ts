@@ -9,7 +9,7 @@ export class AvailabilityCode {
     if (this.code.has(code)) {
       this.code.set(code, availability);
     } else {
-      throw new Error('Código no disponible.');
+      throw new Error('Código no usado.');
     }
   }
 
@@ -17,7 +17,7 @@ export class AvailabilityCode {
     if (this.code.has(code)) {
       return this.code.get(code);
     } else {
-      throw new Error('Código no disponible.');
+      throw new Error('Código no pudo ser obtenido.');
     }
   }
 
@@ -25,7 +25,7 @@ export class AvailabilityCode {
     if (this.code.has(code)) {
       this.code.delete(code);
     } else {
-      throw new Error('Código no disponible.');
+      throw new Error('Código no pudo ser eliminado.');
     }
   }
 
