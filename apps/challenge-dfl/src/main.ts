@@ -5,7 +5,7 @@ import { RpcCustomExceptionFilter } from './exceptions/rpc-custom-exception.filt
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.setGlobalPrefix('api');
+  app.setGlobalPrefix('exchange/api');
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,

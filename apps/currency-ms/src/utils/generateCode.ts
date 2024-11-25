@@ -1,6 +1,6 @@
 export class AvailabilityCode {
   private code = new Map();
-  
+
   insert(code: string, availability = true) {
     this.code.set(code, availability);
   }

@@ -22,7 +22,7 @@ export class AppAuthGuards implements CanActivate {
         secret: process.env.APP_JWT_SECRET,
       });
       if (isValid) {
-        request['user'] = isValid;
+        request['user'] = isValid?.id;
         return true;
       }
     } catch (e) {

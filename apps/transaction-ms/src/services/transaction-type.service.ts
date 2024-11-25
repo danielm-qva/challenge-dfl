@@ -11,6 +11,7 @@ import {
   TransactionTypeModel,
 } from '../entities/transaction-type.entity';
 import { QueryRequestDto } from '../../../challenge-dfl/src/dto';
+import { ERROR_CODE } from '../../../challenge-dfl/src/constant/Error.code';
 
 @Injectable()
 export class TransactionTypeService {
@@ -27,12 +28,12 @@ export class TransactionTypeService {
       return new RpcException({
         status: HttpStatus.BAD_REQUEST,
         message: 'transactionType not created',
+        code: ERROR_CODE.TRANSACTION_TYPE_NOT_CREATED,
       });
     }
   }
 
   async findAll(queryReq: QueryRequestDto): Promise<any[]> {
-    console.log('Serivices', queryReq);
     return this.TransactionType.find()
       .setOptions({ sanitizeFilter: true })
       .skip((queryReq.page - 1) * queryReq.size)
@@ -46,6 +47,7 @@ export class TransactionTypeService {
       return new RpcException({
         status: HttpStatus.NOT_FOUND,
         message: 'transactionType not found',
+        code: ERROR_CODE.TRANSACTION_TYPE_NOT_FOUND,
       });
     }
     return transactionType;
@@ -69,6 +71,7 @@ export class TransactionTypeService {
       return new RpcException({
         status: HttpStatus.BAD_REQUEST,
         message: 'transactionType not udpate',
+        code: ERROR_CODE.TRANSACTION_TYPE_NOT_UPDATED,
       });
     }
     return updateTransactionType;
@@ -85,6 +88,7 @@ export class TransactionTypeService {
       return new RpcException({
         status: HttpStatus.BAD_REQUEST,
         message: 'transactionType not is remove',
+        code: ERROR_CODE.TRANSACTION_TYPE_NOT_REMOVE,
       });
     }
     return deleteTransactionType;

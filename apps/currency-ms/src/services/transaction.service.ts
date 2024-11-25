@@ -23,6 +23,7 @@ import {
 } from '../../../transaction-ms/src/entities/transaction-type.entity';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
+import { ERROR_CODE } from '../../../challenge-dfl/src/constant/Error.code';
 
 @Injectable()
 export class TransactionService {
@@ -40,10 +41,12 @@ export class TransactionService {
   private readonly logger = new Logger(TransactionService.name);
 
   async create(createTransactionDto: CreateTransactionDto) {
-    const transactionType = await this.TransactionType.findById(
-      createTransactionDto.transactionType,
-    ).exec();
-    if (!transactionType) {
+    const transactionType = await this.Transaction.findById(
+      createTransactionDto?.transactionType,
+    )
+      .populate('transactionType', 'name', this.TransactionType)
+      .exec();
+    if (transactionType) {
       return new RpcException({
         status: HttpStatus.NOT_FOUND,
         message: 'transaction type not found',
@@ -74,13 +77,18 @@ export class TransactionService {
         });
       }
       this.assignCodeService.delete(code);
-      return newTransaction;
+      return {
+        ...newTransaction,
+        transactionType: transactionType.transactionType?.name,
+      };
     } catch (error: any) {
       this.assignCodeService.update(code, false);
-      return new RpcException({
-        status: HttpStatus.NOT_FOUND,
-        message: 'transaction not created',
-      });
+      return {
+        error: true,
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: 'Transaction creation failed',
+        code: ERROR_CODE.TRANSACTION_NOT_CREATED,
+      };
     }
   }
 
@@ -149,6 +157,7 @@ export class TransactionService {
         return new RpcException({
           status: HttpStatus.NOT_FOUND,
           message: 'Transaction not found',
+          code: ERROR_CODE.TRANSACTION_TYPE_NOT_FOUND,
         });
       }
       return {
@@ -160,6 +169,7 @@ export class TransactionService {
       return new RpcException({
         status: HttpStatus.NOT_FOUND,
         message: 'transaction not found',
+        code: ERROR_CODE.TRANSACTION_TYPE_NOT_FOUND,
       });
     }
   }
@@ -173,6 +183,7 @@ export class TransactionService {
           new: true,
         },
       ).exec();
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e) {
       return new RpcException({
         status: HttpStatus.BAD_REQUEST,
@@ -188,6 +199,7 @@ export class TransactionService {
       return new RpcException({
         status: HttpStatus.BAD_REQUEST,
         message: 'transaction not is remove',
+        code: ERROR_CODE.TRANSACTION_NOT_REMOVE,
       });
     }
   }

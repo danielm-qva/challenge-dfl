@@ -16,7 +16,7 @@ import { QueryRequestDto } from '../dto';
 import { AppAuthGuards } from '../guards/app-auth.guards';
 import { ParseObjectIdPipe } from '../pipe/parse-object-id.pipe';
 
-@Controller('conversion')
+@Controller()
 @UseGuards(AppAuthGuards)
 export class TransactionController {
   constructor(
@@ -24,7 +24,7 @@ export class TransactionController {
     private readonly clientCurrency: ClientProxy,
   ) {}
 
-  @Post()
+  @Post('/conversion')
   // @UseInterceptors(RejectDuplicatePayloadInterceptor)
   async createConversion(
     @Body() createTransactionDto: CreateTransactionDto,
@@ -36,12 +36,12 @@ export class TransactionController {
     );
   }
 
-  @Get()
+  @Get('/conversion')
   async getAllTransaction(@Query() query: QueryRequestDto) {
     return this.clientCurrency.send({ cmd: 'findAllTransaction' }, query);
   }
 
-  @Get(':id')
+  @Get('/conversion/:id')
   async getOneTransaction(@Param('id', ParseObjectIdPipe) _id: string) {
     return this.clientCurrency.send({ cmd: 'findOneTransaction' }, { _id });
   }

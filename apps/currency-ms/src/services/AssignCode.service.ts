@@ -1,9 +1,9 @@
 import { forwardRef, Inject, Injectable, OnModuleInit } from '@nestjs/common';
-import { AvailabilityCode, fillZero } from '../utils/GenerateCode';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { Cron } from '@nestjs/schedule';
 import { TransactionService } from './transaction.service';
+import { AvailabilityCode, fillZero } from '../utils/generateCode';
 
 @Injectable()
 export class AssignCodeService implements OnModuleInit {
